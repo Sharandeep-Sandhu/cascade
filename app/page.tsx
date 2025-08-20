@@ -72,28 +72,50 @@ export default function RFCascadeCalculator() {
   const updatePowerConversion = (type: keyof PowerConversions, field: string, value: number) => {
     setPowerConversions((prev) => {
       const updated = { ...prev }
-      const conversion = { ...updated[type] }
 
-      // @ts-ignore
-      conversion[field] = value
-
-      // Calculate result based on type
       switch (type) {
-        case "dbToDbm":
+        case "dbToDbm": {
+          const conversion = { ...updated[type] }
+          if (field === "db") {
+            conversion.db = value
+          } else if (field === "referenceDbm") {
+            conversion.referenceDbm = value
+          }
           conversion.result = convertDbToDbm(conversion.db, conversion.referenceDbm)
+          updated[type] = conversion
           break
-        case "dbmToWatts":
+        }
+        case "dbmToWatts": {
+          const conversion = { ...updated[type] }
+          if (field === "dbm") {
+            conversion.dbm = value
+          }
           conversion.result = convertDbmToWatts(conversion.dbm)
+          updated[type] = conversion
           break
-        case "wattsToDbm":
+        }
+        case "wattsToDbm": {
+          const conversion = { ...updated[type] }
+          if (field === "watts") {
+            conversion.watts = value
+          }
           conversion.result = convertWattsToDbm(conversion.watts)
+          updated[type] = conversion
           break
-        case "wattsToDb":
+        }
+        case "wattsToDb": {
+          const conversion = { ...updated[type] }
+          if (field === "watts") {
+            conversion.watts = value
+          } else if (field === "referenceWatts") {
+            conversion.referenceWatts = value
+          }
           conversion.result = convertWattsToDb(conversion.watts, conversion.referenceWatts)
+          updated[type] = conversion
           break
+        }
       }
 
-      updated[type] = conversion
       return updated
     })
   }
@@ -690,7 +712,7 @@ export default function RFCascadeCalculator() {
                 <CardContent className="pt-6">
                   <div className="text-center text-muted-foreground">
                     <Calculator className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>Click "Calculate Cascade" to see results</p>
+                    <p>Click &quot;Calculate Cascade&quot; to see results</p>
                   </div>
                 </CardContent>
               </Card>
